@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>todoList - 아이디 찾기 </title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #loginDiv {
+            border: 1px solid #ccc;
+            padding: 20px;
+            width: 400px;
+        }
+
+        #loginDiv h2 {
+            text-align: center;
+        }
+
+        #loginDiv label {
+            text-align: left;
+            display: inline-block;
+            width: 100px;
+            margin-right: 30px;
+        }
+
+        #loginDiv .radio {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        #loginDiv .radio label {
+            width: auto;
+            margin-right: 0;
+        }
+
+        #loginDiv #button {
+            text-align: center;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="loginForm" id="loginDiv">
+        <h2>
+            비밀번호 찾기
+        </h2>
+        <label>이름</label>
+        <input type="text" id="name" name="name" placeholder="이름 입력">
+        <br>
+        <label>아이디</label>
+        <input type="text" id="id" name="id" placeholder="아이디 입력">
+        <div class="radio">
+            <label>
+                <input type="radio" name="findType" value="phone"> 전화번호로 찾기
+            </label>
+            <label>
+                <input type="radio" name="findType" value="email"> 이메일로 찾기
+            </label>
+        </div>
+        <div id="phoneBox">
+            <label>전화번호 </label>
+            <input type="text" inputmode="numeric" placeholder="01012345678" maxlength="11">
+        </div>
+
+        <div id="emailBox" style="display:none">
+            <label>이메일</label>
+            <input type="email" placeholder="example@email.com">
+        </div>
+
+        <br>
+        <button id="button" type="submit"> 확인 </button>
+    </div>
+    <script>
+        const phoneRadio = document.querySelector('input[value = "phone"]');
+        const emailRadio = document.querySelector('input[value ="email"]');
+
+        const phone = document.getElementById("phoneBox");
+        const email = document.getElementById("emailBox");
+        
+        phoneRadio.addEventListener("change",()=>{
+            phone.style.display="block";
+            email.style.display="none";
+        });
+        emailRadio.addEventListener("change",()=>{
+            phone.style.display= "none";
+            email.style.display="block";
+        });
+    </script>
+</body>
+
+</html>

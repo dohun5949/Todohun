@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>todoList - 회원가입 </title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #loginDiv {
+            border: 1px solid #ccc;
+            padding: 20px;
+            width: 400px;
+        }
+
+        #loginDiv h2 {
+            text-align: center;
+        }
+
+        #loginDiv label {
+            text-align: left;
+            display: inline-block;
+            width: 100px;
+            margin-right: 30px;
+        }
+
+        #loginDiv input {
+            width: 180px;
+        }
+
+        #loginDiv #button {
+            text-align: center;
+            width: 100%;
+        }
+
+        #row {
+            display: flex;
+            justify-content: flex-end;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="loginForm" id="loginDiv">
+        <h2>
+            SIGN UP
+        </h2>
+        <form action="/login" method="post" id="fm">
+            <label>아이디</label>
+            <input type="text" id="login" name="login" placeholder="아이디 입력">
+            <button id="unique" type="button">중복확인</button>
+            <br>
+            <label>비밀번호</label>
+            <input type="text" id="pwd" name="pwd" placeholder="비밀번호 입력">
+            <br>
+            <label>비밀번호 확인</label>
+            <input type="text" id="pwdCheck" name="pwdCheck" placeholder="비밀번호 확인">
+            <br>
+            <label>이름 </label>
+            <input type="text" id="name" name="name" placeholder="이름">
+            <br>
+            <label>전화번호 </label>
+            <input type="text" inputmode="numeric" placeholder="01012345678" maxlength="11">
+            <br>
+            <label>이메일</label>
+            <input type="email" id="email" name="email" placeholder="example@email.com">
+            <br>
+            <label>생년월일</label>
+            <input type="date" id="birth" name="birth">
+
+            <br><br>
+            <button id="button" type="submit"> 회원가입 </button>
+
+            <div id="row">
+                <a href="signup.html">로그인</a>
+            </div>
+        </form>
+    </div>
+</body>
+
+</html>
