@@ -98,34 +98,21 @@
                     <label>
                         <input type="checkbox" class=item>
                         할 일 1
-                        <button class="del">x</button>
                     </label>
                 </li>
                 <li>
                     <label>
                         <input type="checkbox" class=item>
                         할 일 2
-                        <button class="del">x</button>
                     </label>
                 </li>
                 <li>
                     <label>
                         <input type="checkbox" class=item>
                         할 일 3
-                        <button class="del">x</button>
                     </label>
                 </li>
             </ul>
-            <h3>할 일 등록</h3>
-
-            <div id="todo">
-                <div class="div">
-                    <input type="text" class="todoText" placeholder="할 일 입력">
-                    <button class="delete">x</button>
-                </div>
-            </div>
-            <button id="add">할 일 추가</button>
-            <button id="done">추가</button>
         </section>
     </main>
     <script>
@@ -136,67 +123,16 @@
         const todayStr = `${year}-${month}-${day}`;
         document.getElementById("today").innerText = todayStr;
 
-        document.getElementById("add").addEventListener("click", function () {
-
-            const div = document.createElement("div");
-            div.className = "div";
-
-            const input = document.createElement("input");
-            input.type = "text";
-            input.className = "todoText";
-            input.placeholder = "할 일 입력";
-
-            const button = document.createElement("button");
-            button.type = "button";
-            button.className = "delete";
-            button.innerText = "x";
-            button.addEventListener("click", function () {
-                div.remove();
-            })
-            div.appendChild(input);
-            div.appendChild(button);
-
-            document.getElementById("todo").appendChild(div);
-            input.focus();
-        })
         const todolist = document.getElementById("todoList")
         const items = document.querySelectorAll(".item");
-        items.forEach(item => {
-            item.addEventListener("change", function () {
+        items.forEach(item=>{
+            item.addEventListener("change",function(){
                 const li = this.closest("li");
 
-                if (this.checked) {
+                if(this.checked){
                     todolist.appendChild(li);
                 }
             })
-        })
-        document.getElementById("done").addEventListener("click", function () {
-            const writing = document.querySelectorAll(".todoText");
-
-            writing.forEach(input => {
-                const text = input.value.trim();
-
-                if (text == "") {
-                    return;
-                }
-                const li = document.createElement("li");
-                li.innerHTML = `<label>
-                        <input type="checkbox" class=item>
-                        ${text}
-                        <button class="del">x</button>
-                    </label>`;
-                todolist.appendChild(li);
-                input.value = "";
-            });
-
-        });
-
-        todolist.addEventListener("click", function (e) {
-            if (!e.target.classList.contains("del")) {
-                return;
-            }
-            const li = e.target.closest("li");
-            li.remove();
         })
     </script>
 </body>
