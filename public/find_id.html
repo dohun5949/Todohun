@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <title>todoList - 아이디 찾기</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+        
+        nav {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        main {
+            height: calc(100vh - 60px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        #loginDiv {
+            border: 1px solid #ccc;
+            padding: 20px;
+            width: 320px;
+            transform: translateY(-100px);
+        }
+
+        #loginDiv h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .row label {
+            width: 90px;
+            flex-shrink: 0;
+        }
+
+        .row input {
+            width: 180px;
+            padding: 6px;
+        }
+
+        .radio {
+            display: flex;
+            gap: 16px;
+            margin: 10px 0;
+            font-size: 0.9em;
+        }
+
+        button {
+            width: 100%;
+            padding: 6px;
+            margin-top: 10px;
+        }
+        #row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 0.9em;
+        }
+
+        #row a:first-child {
+            margin-right: auto;
+        }
+
+        #find {
+            display: flex;
+            align-items: center;
+        }
+        a {
+            text-decoration: none;
+            color: black;
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <a href="main.html">todolist</a>
+    </nav>
+
+    <main>
+        <div id="loginDiv">
+            <h2>아이디 찾기</h2>
+
+            <div class="row">
+                <label>이름</label>
+                <input type="text" placeholder="이름 입력">
+            </div>
+
+            <div class="radio">
+                <label>
+                    <input type="radio" name="findType" value="phone" checked>
+                    전화번호
+                </label>
+                <label>
+                    <input type="radio" name="findType" value="email">
+                    이메일
+                </label>
+            </div>
+
+            <div id="phoneBox" class="row">
+                <label>전화번호</label>
+                <input type="text" placeholder="01012345678" maxlength="11">
+            </div>
+
+            <div id="emailBox" class="row" style="display:none;">
+                <label>이메일</label>
+                <input type="email" placeholder="example@email.com">
+            </div>
+
+            <button type="submit">확인</button>
+            <div id="row">
+                <a href="login.html">로그인</a>
+                <div id="find">
+                    <a href="find_pwd.html">비밀번호 찾기</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const phoneRadio = document.querySelector('input[value="phone"]');
+        const emailRadio = document.querySelector('input[value="email"]');
+        const phone = document.getElementById("phoneBox");
+        const email = document.getElementById("emailBox");
+
+        phoneRadio.addEventListener("change", () => {
+            phone.style.display = "flex";
+            email.style.display = "none";
+        });
+
+        emailRadio.addEventListener("change", () => {
+            phone.style.display = "none";
+            email.style.display = "flex";
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>todolist - 메인화면</title>
+    <style>
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            border-bottom: 1px solid black;
+
+        }
+
+        .menu {
+            display: flex;
+            gap: 20px;
+            margin: 0;
+            padding: 0;
+        }
+
+        .main {
+            display: flex;
+            height: calc(100vh - 60px);
+        }
+
+        li {
+            list-style: none;
+        }
+
+        a {
+            text-decoration: none;
+            color: black;
+        }
+
+        main {
+            display: flex;
+            height: calc(100vh - 60px);
+        }
+
+        #left {
+            width: 20%;
+            border-right: 1px solid black;
+            padding: 30px 20px;
+        }
+
+        #left ul {
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            /* 메뉴 간 간격 */
+        }
+
+        #left li {
+            font-size: 16px;
+        }
+
+        #left a {
+            display: block;
+            padding: 10px 12px;
+            border-radius: 6px;
+            transition: background-color 0.2s;
+        }
+
+        #left a:hover {
+            background-color: #f0f0f0;
+        }
+
+        #right {
+            width: 80%;
+            padding: 20px;
+        }
+
+        .div {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+
+        .todoText {
+            flex: 1;
+        }
+    </style>
+
+
+</head>
+
+<body>
+    <nav>
+        <div class="logo">
+            <a href="main.html">todolist</a>
+        </div>
+        <ul class="menu">
+            <li>
+                <a href="myinfo.html">내 정보</a>
+            </li>
+            <li>
+                <a href="login.html">로그인</a>
+            </li>
+        </ul>
+    </nav>
+
+    <main id="main">
+        <section id="left">
+            <ul>
+                <li><a href="today.html">오늘 할 일</a></li>
+                <li><a href="main.html">할 일 등록</a></li>
+                <li><a href="calendar.html">달력 보기</a></li>
+                <li><a href="remain.html">남은 할 일</a></li>
+            </ul>
+
+        </section>
+        <section id="right">
+            <h2 id="today">
+            </h2>
+            <h3>할 일</h3>
+            <ul id="todoList">
+                <li>
+                    <label>
+                        <input type="checkbox" class=item>
+                        할 일 1
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="checkbox" class=item>
+                        할 일 2
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="checkbox" class=item>
+                        할 일 3
+                    </label>
+                </li>
+            </ul>
+        </section>
+    </main>
+    <script>
+        var d = new Date();
+        var year = d.getFullYear();
+        var month = String(d.getMonth() + 1).padStart(2, '0');
+        var day = String(d.getDate()).padStart(2, '0');
+        const todayStr = `${year}-${month}-${day}`;
+        document.getElementById("today").innerText = todayStr;
+
+        const todolist = document.getElementById("todoList")
+        const items = document.querySelectorAll(".item");
+        items.forEach(item => {
+            item.addEventListener("change", function () {
+                const li = this.closest("li");
+
+                if (this.checked) {
+                    todolist.appendChild(li);
+                }
+            })
+        })
+    </script>
+</body>
+
+</html>

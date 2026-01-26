@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>todolist - 메인화면</title>
+    <style>
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            border-bottom: 1px solid black;
+
+        }
+
+        .menu {
+            display: flex;
+            gap: 20px;
+            margin: 0;
+            padding: 0;
+        }
+
+        .main {
+            display: flex;
+            height: calc(100vh - 60px);
+        }
+
+        li {
+            list-style: none;
+        }
+
+        a {
+            text-decoration: none;
+            color: black;
+        }
+
+        main {
+            display: flex;
+            height: calc(100vh - 60px);
+        }
+
+        #left {
+            width: 20%;
+            border-right: 1px solid black;
+            padding: 20px;
+        }
+
+        #right {
+            width: 80%;
+            padding: 20px;
+        }
+
+        .div {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+
+        .todoText {
+            flex: 1;
+        }
+
+        .box {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .profile {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 1px solid #ccc;
+        }
+
+        #update {
+            height: 30px;
+            margin-left: auto;
+        }
+
+        a {
+            text-decoration: none;
+            display: block;
+            padding: 10px 12px;
+            border-radius: 6px;
+            transition: background-color 0.2s;
+        }
+
+        a:hover {
+            background-color: #f0f0f0;
+        }
+
+        .progressBox {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 260px;
+        }
+
+        .progress {
+            width: 100%;
+            height: 14px;
+            background-color: #eee;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .progressBar {
+            height: 100%;
+            width: 100%;
+            background-color: gray;
+        }
+    </style>
+
+
+</head>
+
+<body>
+    <nav>
+        <div class="logo">
+            <a href="main.html">todolist</a>
+        </div>
+        <ul class="menu">
+            <li>
+                <a href="/myinfo.html">내 정보</a>
+            </li>
+            <li>
+                <a href="login.html">로그인</a>
+            </li>
+        </ul>
+    </nav>
+    <form id="form">
+        <div class="box">
+            <div class="profile" id="profile" title="이미디를 수정하려면 클릭하세요">
+                <img src="" alt="프로필 사진" id="image">
+                <input type="file" id="fileInput" accept="image/*" style="display: none;">
+            </div>
+            <div class="info">
+                <p><span id="name">닉네임</span> <input type="text" id="name_input" name="nickname"></p>
+                <p><span id="writing">소개 글 <input type="text" id="writing_input" name="writing"></span></p>
+            </div>
+            <button id="done" type="submit">수정</button>
+
+        </div>
+    </form>
+    <script>
+        const profile = document.getElementById("profile");
+        const fileInput = document.getElementById("fileInput");
+        const img = document.getElementById("image");
+        profile.addEventListener("click", function (e) {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener("change", function () {
+            const file = fileInput.files[0];
+            if (!file) {
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                img.src = e.target.result;
+            }
+            reader.readAsDataURL(file);
+        });
+        document.getElementById("form").addEventListener("submit", async function (e) {
+            e.preventDefault();
+            const form = new FormData(this);
+            const data = Object.fromEntries(form.entries());
+            console.log(data);
+            const res = await fetch("/user/myinfo_edit",{
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            });
+            if(res.ok){
+                location.href = "/myinfo.html";
+            }else{
+                alert("edit failure");
+                return;
+            }
+        })
+    </script>
+</body>
+
+</html>
