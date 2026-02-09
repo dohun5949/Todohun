@@ -76,7 +76,7 @@
             <h2 id="today">
             </h2>
             <h3>할 일</h3>
-            <ul class="list">
+            <ul id="todoList">
             </ul>
         </section>
         <section class="calender">
@@ -91,6 +91,7 @@
     </main>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
     <script>
+        loadtodo();
         var now = new Date();
         var year = now.getFullYear();
         var month = String(now.getMonth() + 1).padStart(2, '0');
@@ -98,19 +99,79 @@
         const today = `${year}-${month}-${day}`;
         document.getElementById("today").innerText = today;
 
-        document.addEventListener('DOMContentLoaded', function () {
-
+        document.addEventListener('DOMContentLoaded', async function () {
+            const res = await fetch("/todo/calender", {
+                credentials: "include"
+            })
+            const data = await res.json();
+            const events = data.map(todo => ({
+                title: `${todo.text}`,
+                start: todo.date,
+                allDay: true,
+                backgroundColor: "transparent",
+                borderColor: "transparent",
+                textColor: "#000"
+            }));
             const calendar = new FullCalendar.Calendar(
                 document.getElementById('calendar'),
                 {
                     initialView: 'dayGridMonth',
-
+                    events: events,
                     dateClick: function (info) {
+                        console.log(info.dateStr);
                     }
                 }
             );
             calendar.render();
         });
+        const todolist = document.getElementById("todoList");
+        todolist.addEventListener("change", async function (e) {
+            if (!e.target.classList.contains("item")) {
+                return;
+            }
+            const li = e.target.closest("li");
+            const text_id = li.dataset.text_id;
+            const completed = e.target.checked ? 1 : 0;
+            await fetch("/todo/completed", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+                body: JSON.stringify({
+                    text_id,
+                    completed
+                })
+            });
+            if (e.target.checked) {
+                todolist.appendChild(li);
+            } else {
+                todolist.prepend(li);
+            }
+        })
+        async function loadtodo() {
+            const res = await fetch("/todo/todolist", {
+                credentials: "include"
+            });
+            if (!res.ok) {
+                alert("need to login");
+                location.href = "/login.html";
+                return;
+            }
+            const data = await res.json();
+            const todolist = document.getElementById("todoList");
+            todolist.innerHTML = "";
+
+            data.forEach(todo => {
+                const li = document.createElement("li");
+                li.dataset.text_id = todo.text_id;
+                li.innerHTML = `
+            <label>
+                <input type="checkbox" class="item" ${todo.completed ? "checked" : ""}>
+                ${todo.text} - ${todo.category}
+            </label>
+        `;
+                todolist.appendChild(li);
+            })
+        }
     </script>
 </body>
 

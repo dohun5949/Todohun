@@ -119,28 +119,11 @@
             </h2>
             <h3>할 일</h3>
             <ul id="todoList">
-                <li>
-                    <label>
-                        <input type="checkbox" class=item>
-                        할 일 1
-                    </label>
-                </li>
-                <li>
-                    <label>
-                        <input type="checkbox" class=item>
-                        할 일 2
-                    </label>
-                </li>
-                <li>
-                    <label>
-                        <input type="checkbox" class=item>
-                        할 일 3
-                    </label>
-                </li>
             </ul>
         </section>
     </main>
     <script>
+        loadtodo();
         var d = new Date();
         var year = d.getFullYear();
         var month = String(d.getMonth() + 1).padStart(2, '0');
@@ -148,17 +131,54 @@
         const todayStr = `${year}-${month}-${day}`;
         document.getElementById("today").innerText = todayStr;
 
-        const todolist = document.getElementById("todoList")
-        const items = document.querySelectorAll(".item");
-        items.forEach(item => {
-            item.addEventListener("change", function () {
-                const li = this.closest("li");
-
-                if (this.checked) {
-                    todolist.appendChild(li);
-                }
-            })
+        const todolist = document.getElementById("todoList");
+        todolist.addEventListener("change", async function (e) {
+            if (!e.target.classList.contains("item")) {
+                return;
+            }
+            const li = e.target.closest("li");
+            const text_id = li.dataset.text_id;
+            const completed = e.target.checked ? 1 : 0;
+            await fetch("/todo/completed", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+                body: JSON.stringify({
+                    text_id,
+                    completed
+                })
+            });
+            if (e.target.checked) {
+                todolist.appendChild(li);
+            } else {
+                todolist.prepend(li);
+            }
         })
+        async function loadtodo() {
+            const res = await fetch("/todo/todolist", {
+                credentials: "include"
+            });
+            if (!res.ok) {
+                alert("need to login");
+                location.href = "/login.html";
+                return;
+            }
+            const data = await res.json();
+            const todolist = document.getElementById("todoList");
+            todolist.innerHTML = "";
+
+            data.forEach(todo => {
+                const li = document.createElement("li");
+                li.dataset.text_id = todo.text_id;
+                li.innerHTML = `
+            <label>
+                <input type="checkbox" class="item" ${todo.completed ? "checked" : ""}>
+                ${todo.text} - ${todo.category}
+            </label>
+        `;
+                todolist.appendChild(li);
+            })
+        }
     </script>
 </body>
 

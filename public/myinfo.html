@@ -145,16 +145,16 @@
     </div>
     <main id="main">
         <section id="section">
-            완료한 할 일 : <span id="complete"></span>
-            <br>
             <a href="/today.html">오늘 할 일</a>
+            <ul id="todoList">
+            </ul>
             <br>
             오늘 달성률
             <div class="progressBox">
                 <div class="progress">
                     <div class="progressBar"></div>
                 </div>
-                <span id="progressPer">0%</span>
+                <span id="progressPer"></span>
 
             </div>
             <a href="/question.html">문의하기</a>
@@ -163,19 +163,20 @@
 
     </main>
     <script>
-        async function withdraw(){
+        loadtodo();
+        async function withdraw() {
             const data = prompt("탈퇴하시겠습니까? 탈퇴를 원하신다면 닉네임을 입력해주세요");
-            if(!data){
+            if (!data) {
                 return;
             }
-            const res = await fetch("/user/withdraw",{
+            const res = await fetch("/user/withdraw", {
                 method: "POST",
-                headers: {"Content-Type" : "application/json" },
-                body: JSON.stringify({data})
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ data })
             });
-            
+
             const del = await res.json();
-            if(!res.ok){
+            if (!res.ok) {
                 alert(del.message)
                 return;
             }
@@ -183,9 +184,9 @@
             location.href = "/login.html";
 
         }
-        async function loadInfo(){
+        async function loadInfo() {
             const res = await fetch("/user/myinfo");
-            if(!res.ok){
+            if (!res.ok) {
                 alert("need to login");
                 location.href = "/login.html";
                 return;
@@ -198,6 +199,62 @@
 
         }
         loadInfo();
+        const todolist = document.getElementById("todoList");
+        todolist.addEventListener("change", async function (e) {
+            if (!e.target.classList.contains("item")) {
+                return;
+            }
+            const li = e.target.closest("li");
+            const text_id = li.dataset.text_id;
+            const completed = e.target.checked ? 1 : 0;
+            await fetch("/todo/completed", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+                body: JSON.stringify({
+                    text_id,
+                    completed
+                })
+            });
+            if (e.target.checked) {
+                todolist.appendChild(li);
+            } else {
+                todolist.prepend(li);
+            }
+        })
+        async function loadtodo() {
+            const res = await fetch("/todo/todolist", {
+                credentials: "include"
+            });
+            if (!res.ok) {
+                alert("need to login");
+                location.href = "/login.html";
+                return;
+            }
+            const data = await res.json();
+            const todolist = document.getElementById("todoList");
+            todolist.innerHTML = "";
+
+            data.forEach(todo => {
+                const li = document.createElement("li");
+                li.dataset.text_id = todo.text_id;
+                li.innerHTML = `
+            <label>
+                <input type="checkbox" class="item" ${todo.completed ? "checked" : ""}>
+                ${todo.text} - ${todo.category}
+            </label>
+        `;
+                todolist.appendChild(li);
+            });
+            const total = data.length;
+            const completed = data.filter(todo => todo.completed).length;
+            const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
+            document.querySelector(".progressBar").style.width = percent + "%";
+            document.getElementById("progressPer").innerText = percent + "%";
+        }
+
+
+
     </script>
 </body>
 

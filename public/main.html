@@ -119,27 +119,6 @@
             </h2>
             <h3>할 일</h3>
             <ul id="todoList">
-                <li>
-                    <label>
-                        <input type="checkbox" class=item>
-                        할 일 1
-                        <button class="del">x</button>
-                    </label>
-                </li>
-                <li>
-                    <label>
-                        <input type="checkbox" class=item>
-                        할 일 2
-                        <button class="del">x</button>
-                    </label>
-                </li>
-                <li>
-                    <label>
-                        <input type="checkbox" class=item>
-                        할 일 3
-                        <button class="del">x</button>
-                    </label>
-                </li>
             </ul>
             <h3>할 일 등록</h3>
 
@@ -147,13 +126,13 @@
                 <div class="div">
                     <input type="text" class="todoText" placeholder="할 일 입력">
                     <select id="category" class="category">
-                        <option value="study">📘 공부</option>
-                        <option value="exercise">💪 운동</option>
-                        <option value="assignment">💼 과제</option>
-                        <option value="schedule">📅 일정</option>
-                        <option value="life">😊 생활</option>
-                        <option value="selfdev">🌱 자기계발</option>
-                        <option value="else">💬 기타</option>
+                        <option value="공부">공부</option>
+                        <option value="운동">운동</option>
+                        <option value="과제">과제</option>
+                        <option value="일정">일정</option>
+                        <option value="생활">생활</option>
+                        <option value="자기계발">자기계발</option>
+                        <option value="기타">기타</option>
                     </select>
                     <button class="delete">x</button>
                 </div>
@@ -163,6 +142,7 @@
         </section>
     </main>
     <script>
+        loadtodo();
         var d = new Date();
         var year = d.getFullYear();
         var month = String(d.getMonth() + 1).padStart(2, '0');
@@ -183,13 +163,13 @@
             const select = document.createElement("select");
             select.className = "category";
             select.innerHTML = `
-        <option value="study">📘 공부</option>
-        <option value="exercise">💪 운동</option>
-        <option value="assignment">💼 과제</option>
-        <option value="schedule">📅 일정</option>
-        <option value="life">😊 생활</option>
-        <option value="selfdev">🌱 자기계발</option>
-        <option value="else">💬 기타</option>
+        <option value="공부">공부</option>
+        <option value="운동">운동</option>
+        <option value="과제">과제</option>
+        <option value="일정">일정</option>
+        <option value="생활">생활</option>
+        <option value="자기계발">자기계발</option>
+        <option value="기타">기타</option>
     `;
             const button = document.createElement("button");
             button.type = "button";
@@ -208,12 +188,22 @@
         const todolist = document.getElementById("todoList")
 
 
-        todolist.addEventListener("change", function (e) {
+        todolist.addEventListener("change", async function (e) {
             if (!e.target.classList.contains("item")) {
                 return;
             }
             const li = e.target.closest("li");
-
+            const text_id = li.dataset.text_id;
+            const completed = e.target.checked ? 1:0;
+            await fetch("/todo/completed",{
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                credentials: "include",
+                body: JSON.stringify({
+                    text_id,
+                    completed
+                })
+            });
             if (e.target.checked) {
                 todolist.appendChild(li);
             } else {
@@ -233,6 +223,15 @@
                 if (text == "") {
                     return;
                 }
+                fetch("/todo/done", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    credentials: "include",
+                    body: JSON.stringify({
+                        text: text,
+                        category: category
+                    })
+                });
                 const li = document.createElement("li");
                 li.innerHTML = `<label>
                         <input type="checkbox" class=item>
@@ -245,13 +244,53 @@
 
         });
 
-        todolist.addEventListener("click", function (e) {
+        todolist.addEventListener("click", async function (e) {
             if (!e.target.classList.contains("del")) {
                 return;
             }
             const li = e.target.closest("li");
-            li.remove();
+            const text_id = li.dataset.text_id;
+            const res = await fetch("/todo/del",{
+                method:"POST",
+                headers:{"Content-Type": "application/json"},
+                credentials: "include",
+                body: JSON.stringify({
+                    text_id : text_id
+                })
+            });
+            if(res.ok){
+                li.remove();
+            }else{
+                alert("삭제 실패");
+            }
+            
         })
+        async function loadtodo() {
+            const res = await fetch("/todo/todolist", {
+                credentials: "include"
+            });
+            if (!res.ok) {
+                alert("need to login");
+                location.href = "/login.html";
+                return;
+            }
+            const data = await res.json();
+            const todolist = document.getElementById("todoList");
+            todolist.innerHTML = "";
+
+            data.forEach(todo => {
+                const li = document.createElement("li");
+                li.dataset.text_id = todo.text_id;
+                li.innerHTML = `
+            <label>
+                <input type="checkbox" class="item" ${todo.completed ? "checked" : ""}>
+                ${todo.text} - ${todo.category}
+                <button class="del">x</button>
+            </label>
+        `;
+                todolist.appendChild(li);
+            })
+        }
     </script>
 </body>
 
