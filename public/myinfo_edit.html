@@ -134,10 +134,6 @@
     </nav>
     <form id="form">
         <div class="box">
-            <div class="profile" id="profile" title="이미디를 수정하려면 클릭하세요">
-                <img src="" alt="프로필 사진" id="image">
-                <input type="file" id="fileInput" accept="image/*" style="display: none;">
-            </div>
             <div class="info">
                 <p><span id="name">닉네임</span> <input type="text" id="name_input" name="nickname"></p>
                 <p><span id="writing">소개 글 <input type="text" id="writing_input" name="writing"></span></p>
@@ -147,24 +143,6 @@
         </div>
     </form>
     <script>
-        const profile = document.getElementById("profile");
-        const fileInput = document.getElementById("fileInput");
-        const img = document.getElementById("image");
-        profile.addEventListener("click", function (e) {
-            fileInput.click();
-        });
-
-        fileInput.addEventListener("change", function () {
-            const file = fileInput.files[0];
-            if (!file) {
-                return;
-            }
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                img.src = e.target.result;
-            }
-            reader.readAsDataURL(file);
-        });
         document.getElementById("form").addEventListener("submit", async function (e) {
             e.preventDefault();
             const form = new FormData(this);
